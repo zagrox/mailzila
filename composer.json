@@ -1,0 +1,16 @@
+{
+    "name": "mailzila/newsletter-platform",
+    "description": "Newsletter platform using ElasticEmail SDK",
+    "type": "project",
+    "require": {
+        "php": ">=7.4",
+        "elasticemail/elasticemail-php": "^4.0",
+        "vlucas/phpdotenv": "^5.5",
+        "monolog/monolog": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mailzila\\": "src/"
+        }
+    }
+} 
