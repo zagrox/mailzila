@@ -1,6 +1,9 @@
 [build]
 builder = "nixpacks"
-buildCommand = "composer install --no-dev --optimize-autoloader"
+buildCommand = """
+    composer install --no-dev --optimize-autoloader
+    php database/setup.php
+"""
 
 [deploy]
 startCommand = "php -S 0.0.0.0:$PORT"
