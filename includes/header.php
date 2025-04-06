@@ -11,101 +11,264 @@ if (file_exists($envFile)) {
             $_ENV[trim($key)] = trim($value);
         }
     }
+} else {
+    die('Environment file not found. Please create a .env file.');
 }
 
 // Define application constants
 define('APP_URL', $_ENV['APP_URL'] ?? 'http://localhost:8888/mailzila');
 define('APP_NAME', $_ENV['APP_NAME'] ?? 'Mailzila');
-define('APP_ENV', $_ENV['APP_ENV'] ?? 'development');
-define('APP_DEBUG', $_ENV['APP_DEBUG'] ?? true);
+define('APP_ENV', $_ENV['APP_ENV'] ?? 'production');
+define('APP_DEBUG', $_ENV['APP_DEBUG'] ?? false);
 
-// Load ElasticEmail API wrapper
+// Initialize database connection
+require_once __DIR__ . '/Database.php';
+$db = Database::getInstance(
+    $_ENV['DB_HOST'],
+    $_ENV['DB_NAME'],
+    $_ENV['DB_USER'],
+    $_ENV['DB_PASS']
+);
+
+// Initialize authentication
+require_once __DIR__ . '/Auth.php';
+$auth = new Auth();
+
+// Check if user is logged in
+$isLoggedIn = $auth->isLoggedIn();
+$currentUser = $isLoggedIn ? $auth->getCurrentUser() : null;
+
+// Get current path without base URL
+$currentPath = str_replace('/mailzila', '', $_SERVER['REQUEST_URI']);
+$currentPath = strtok($currentPath, '?'); // Remove query string
+
+// If not logged in and not on an auth page, redirect to login
+$authPaths = ['/auth/login', '/auth/register', '/auth/google', '/auth/github'];
+if (!$isLoggedIn && !in_array($currentPath, $authPaths)) {
+    header('Location: ' . APP_URL . '/auth/login');
+    exit;
+}
+
+// If logged in and on an auth page, redirect to home
+if ($isLoggedIn && in_array($currentPath, $authPaths)) {
+    header('Location: ' . APP_URL);
+    exit;
+}
+
+// Load ElasticEmail API
 require_once __DIR__ . '/ElasticEmailAPI.php';
-$api = new ElasticEmailAPI($_ENV['ELASTICEMAIL_API_KEY']);
+$api = null;
+
+try {
+    if (isset($_ENV['ELASTICEMAIL_API_KEY'])) {
+        $api = new ElasticEmailAPI($_ENV['ELASTICEMAIL_API_KEY']);
+    } else {
+        throw new Exception('ElasticEmail API key not found in environment variables.');
+    }
+} catch (Exception $e) {
+    if (APP_DEBUG) {
+        echo '<div class="alert alert-danger">';
+        echo '<h5>Debug Information:</h5>';
+        echo '<p>Error: ' . htmlspecialchars($e->getMessage()) . '</p>';
+        echo '<p>File: ' . htmlspecialchars($e->getFile()) . '</p>';
+        echo '<p>Line: ' . htmlspecialchars($e->getLine()) . '</p>';
+        echo '</div>';
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo APP_NAME; ?></title>
+    <title><?php echo htmlspecialchars(APP_NAME); ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <style>
-        .sidebar {
-            min-height: 100vh;
-            background: #343a40;
-            color: white;
-            padding-top: 20px;
-        }
-        .sidebar .nav-link {
-            color: rgba(255,255,255,.75);
-            padding: 10px 20px;
-            margin: 5px 0;
-            border-radius: 5px;
-            transition: all 0.3s;
-        }
-        .sidebar .nav-link:hover {
-            color: white;
-            background: rgba(255,255,255,.1);
-        }
-        .sidebar .nav-link.active {
-            color: white;
-            background: rgba(255,255,255,.2);
-        }
-        .sidebar .nav-link i {
-            margin-right: 10px;
-            width: 20px;
-            text-align: center;
-        }
-        .main-content {
-            padding: 20px;
-        }
-        .card {
-            border: none;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-            margin-bottom: 20px;
-        }
-        .card-header {
-            background-color: #f8f9fa;
-            border-bottom: 1px solid rgba(0,0,0,.125);
-        }
-        .table th {
-            border-top: none;
-            background-color: #f8f9fa;
-        }
-        .badge {
-            padding: 0.5em 0.75em;
-        }
-        .btn-sm {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.875rem;
-        }
-    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="<?php echo APP_URL; ?>/assets/css/style.css" rel="stylesheet">
+    <script>
+        // Initialize dark mode if user has enabled it
+        <?php if ($currentUser && isset($currentUser['dark_mode']) && $currentUser['dark_mode']): ?>
+        document.documentElement.setAttribute('data-theme', 'dark');
+        <?php endif; ?>
+
+        // Add sidebar toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const desktopToggle = document.getElementById('sidebarToggle');
+            const mobileToggle = document.getElementById('mobileSidebarToggle');
+            const sidebar = document.querySelector('.sidebar');
+            const backdrop = document.querySelector('.sidebar-backdrop');
+            const mainContent = document.querySelector('.main-content');
+            const mainColumn = document.querySelector('.col-md-10');
+            
+            function toggleSidebar() {
+                if (window.innerWidth <= 767.98) {
+                    // Mobile behavior
+                    sidebar.classList.toggle('show');
+                    backdrop.classList.toggle('show');
+                } else {
+                    // Desktop behavior
+                    sidebar.classList.toggle('collapsed');
+                    document.body.classList.toggle('nav-collapsed');
+                    mainContent.classList.toggle('expanded');
+                    mainColumn.classList.toggle('expanded');
+                    
+                    // Save state to localStorage
+                    const isCollapsed = sidebar.classList.contains('collapsed');
+                    localStorage.setItem('sidebarCollapsed', isCollapsed);
+                }
+            }
+            
+            // Initialize sidebar state from localStorage
+            if (window.innerWidth > 767.98) {
+                const savedState = localStorage.getItem('sidebarCollapsed');
+                if (savedState === 'true') {
+                    sidebar.classList.add('collapsed');
+                    document.body.classList.add('nav-collapsed');
+                    mainContent.classList.add('expanded');
+                    mainColumn.classList.add('expanded');
+                }
+            }
+            
+            // Add click handlers to both toggle buttons
+            desktopToggle.addEventListener('click', toggleSidebar);
+            mobileToggle.addEventListener('click', toggleSidebar);
+            
+            // Handle mobile backdrop click
+            if (backdrop) {
+                backdrop.addEventListener('click', () => {
+                    sidebar.classList.remove('show');
+                    backdrop.classList.remove('show');
+                });
+            }
+            
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 768) {
+                    backdrop?.classList.remove('show');
+                    sidebar.classList.remove('show');
+                    
+                    // Restore desktop state from localStorage
+                    const savedState = localStorage.getItem('sidebarCollapsed');
+                    if (savedState === 'true') {
+                        sidebar.classList.add('collapsed');
+                        document.body.classList.add('nav-collapsed');
+                        mainContent.classList.add('expanded');
+                        mainColumn.classList.add('expanded');
+                    } else {
+                        sidebar.classList.remove('collapsed');
+                        document.body.classList.remove('nav-collapsed');
+                        mainContent.classList.remove('expanded');
+                        mainColumn.classList.remove('expanded');
+                    }
+                } else {
+                    // Reset classes for mobile
+                    sidebar.classList.remove('collapsed');
+                    document.body.classList.remove('nav-collapsed');
+                    mainContent.classList.remove('expanded');
+                    mainColumn.classList.remove('expanded');
+                }
+            });
+        });
+    </script>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-3 col-lg-2 px-0 sidebar">
-                <div class="text-center mb-4">
-                    <h4><?php echo APP_NAME; ?></h4>
+    <?php if ($isLoggedIn): ?>
+        <div class="header-actions">
+            <!-- Notification button -->
+            <a href="<?php echo APP_URL; ?>/pages/notifications" class="notification-btn">
+                <i class="fas fa-bell"></i>
+                <?php
+                try {
+                    // Get unread notification count
+                    $sql = "SELECT COUNT(*) as count FROM notifications WHERE user_id = ? AND is_read = 0";
+                    $result = $db->select($sql, [$_SESSION['user_id']]);
+                    $unreadCount = $result[0]['count'] ?? 0;
+                    if ($unreadCount > 0):
+                ?>
+                    <span class="notification-badge"><?php echo $unreadCount; ?></span>
+                <?php 
+                    endif;
+                } catch (Exception $e) {
+                    // Silently fail for notifications - they're not critical
+                    error_log("Notification error: " . $e->getMessage());
+                }
+                ?>
+            </a>
+            <!-- Toggle buttons -->
+            <button id="mobileSidebarToggle" class="mobile-sidebar-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <button id="sidebarToggle" class="sidebar-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <div class="sidebar-backdrop"></div>
+        
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-2 sidebar">
+                    <div class="logo-container">
+                        <a href="<?php echo APP_URL; ?>" class="app-logo">
+                            <i class="fas fa-envelope"></i>
+                            <h4><?php echo htmlspecialchars(APP_NAME); ?></h4>
+                        </a>
+                    </div>
+                    <ul class="nav flex-column nav-main">
+                        <li class="nav-item">
+                            <a class="nav-link <?php echo $currentPath === '/' ? 'active' : ''; ?>" href="<?php echo APP_URL; ?>">
+                                <i class="fas fa-home"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?php echo strpos($currentPath, '/campaigns') === 0 ? 'active' : ''; ?>" href="<?php echo APP_URL; ?>/campaigns">
+                                <i class="fas fa-bullhorn"></i> Campaigns
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?php echo strpos($currentPath, '/subscribers') === 0 ? 'active' : ''; ?>" href="<?php echo APP_URL; ?>/subscribers">
+                                <i class="fas fa-users"></i> Subscribers
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?php echo strpos($currentPath, '/templates') === 0 ? 'active' : ''; ?>" href="<?php echo APP_URL; ?>/templates">
+                                <i class="fas fa-file-alt"></i> Templates
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="user-menu">
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle" type="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle"></i>
+                                <?php echo htmlspecialchars($currentUser['first_name'] . ' ' . $currentUser['last_name']); ?>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuButton">
+                                <li>
+                                    <a class="dropdown-item" href="<?php echo APP_URL; ?>/pages/notifications">
+                                        <i class="fas fa-bell"></i> Notifications
+                                        <?php if (isset($unreadCount) && $unreadCount > 0): ?>
+                                        <span class="badge bg-danger rounded-pill ms-2"><?php echo $unreadCount; ?></span>
+                                        <?php endif; ?>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="<?php echo APP_URL; ?>/pages/profile">
+                                        <i class="fas fa-user"></i> Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="<?php echo APP_URL; ?>/pages/settings">
+                                        <i class="fas fa-cog"></i> Settings
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="<?php echo APP_URL; ?>/auth/logout">
+                                        <i class="fas fa-sign-out-alt"></i> Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-                <nav class="nav flex-column">
-                    <a class="nav-link <?php echo strpos($_SERVER['PHP_SELF'], '/dashboard.php') !== false ? 'active' : ''; ?>" href="<?php echo APP_URL; ?>/pages/dashboard.php">
-                        <i class="fas fa-tachometer-alt"></i> Dashboard
-                    </a>
-                    <a class="nav-link <?php echo strpos($_SERVER['PHP_SELF'], '/campaigns/') !== false ? 'active' : ''; ?>" href="<?php echo APP_URL; ?>/pages/campaigns/list.php">
-                        <i class="fas fa-envelope"></i> Campaigns
-                    </a>
-                    <a class="nav-link <?php echo strpos($_SERVER['PHP_SELF'], '/subscribers/') !== false ? 'active' : ''; ?>" href="<?php echo APP_URL; ?>/pages/subscribers/list.php">
-                        <i class="fas fa-users"></i> Subscribers
-                    </a>
-                    <a class="nav-link <?php echo strpos($_SERVER['PHP_SELF'], '/templates/') !== false ? 'active' : ''; ?>" href="<?php echo APP_URL; ?>/pages/templates/list.php">
-                        <i class="fas fa-file-alt"></i> Templates
-                    </a>
-                </nav>
-            </div>
-
-            <!-- Main Content -->
-            <div class="col-md-9 col-lg-10 main-content"> 
+                <div class="col-md-10 main-content">
+    <?php endif; ?> 

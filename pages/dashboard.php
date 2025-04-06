@@ -3,7 +3,18 @@ require_once __DIR__ . '/../includes/header.php';
 
 // Get campaign statistics
 try {
+    // Debug: Print API key (first few characters only)
+    if (APP_DEBUG) {
+        echo "<!-- API Key: " . substr($_ENV['ELASTICEMAIL_API_KEY'], 0, 4) . "..." . " -->";
+    }
+
     $campaigns = $api->getCampaigns();
+    
+    // Debug: Print raw API response
+    if (APP_DEBUG) {
+        echo "<!-- API Response: " . print_r($campaigns, true) . " -->";
+    }
+
     $totalCampaigns = count($campaigns);
     $activeCampaigns = 0;
     $totalSent = 0;
@@ -11,9 +22,11 @@ try {
     $totalClicks = 0;
 
     foreach ($campaigns as $campaign) {
-        if ($campaign['status'] === 'Active') {
+        // Check if status exists and is Active
+        if (isset($campaign['status']) && $campaign['status'] === 'Active') {
             $activeCampaigns++;
         }
+        // Use null coalescing operator for safer array access
         $totalSent += $campaign['recipientsCount'] ?? 0;
         $totalOpens += $campaign['openedCount'] ?? 0;
         $totalClicks += $campaign['clickedCount'] ?? 0;
@@ -23,7 +36,12 @@ try {
     $recentCampaigns = array_slice($campaigns, 0, 5);
 } catch (Exception $e) {
     if (APP_DEBUG) {
-        echo "Error: " . $e->getMessage();
+        echo '<div class="alert alert-danger">';
+        echo '<h5>Debug Information:</h5>';
+        echo '<p>Error: ' . htmlspecialchars($e->getMessage()) . '</p>';
+        echo '<p>File: ' . htmlspecialchars($e->getFile()) . '</p>';
+        echo '<p>Line: ' . htmlspecialchars($e->getLine()) . '</p>';
+        echo '</div>';
     }
     $totalCampaigns = 0;
     $activeCampaigns = 0;
@@ -108,26 +126,28 @@ try {
                                 <tbody>
                                     <?php foreach ($recentCampaigns as $campaign): ?>
                                         <tr>
-                                            <td><?php echo htmlspecialchars($campaign['name']); ?></td>
-                                            <td><?php echo htmlspecialchars($campaign['subject']); ?></td>
+                                            <td><?php echo htmlspecialchars($campaign['name'] ?? 'Unnamed Campaign'); ?></td>
+                                            <td><?php echo htmlspecialchars($campaign['subject'] ?? 'No Subject'); ?></td>
                                             <td>
-                                                <span class="badge bg-<?php echo $campaign['status'] === 'Active' ? 'success' : 'secondary'; ?>">
-                                                    <?php echo htmlspecialchars($campaign['status']); ?>
+                                                <span class="badge bg-<?php echo (isset($campaign['status']) && $campaign['status'] === 'Active') ? 'success' : 'secondary'; ?>">
+                                                    <?php echo htmlspecialchars($campaign['status'] ?? 'Unknown'); ?>
                                                 </span>
                                             </td>
                                             <td><?php echo number_format($campaign['recipientsCount'] ?? 0); ?></td>
                                             <td><?php echo number_format($campaign['openedCount'] ?? 0); ?></td>
-                                            <td><?php echo date('M j, Y', strtotime($campaign['dateCreated'])); ?></td>
+                                            <td><?php echo isset($campaign['dateCreated']) ? date('M j, Y', strtotime($campaign['dateCreated'])) : 'N/A'; ?></td>
                                             <td>
-                                                <a href="campaigns/edit.php?id=<?php echo $campaign['campaignID']; ?>" class="btn btn-sm btn-outline-primary">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <a href="campaigns/view.php?id=<?php echo $campaign['campaignID']; ?>" class="btn btn-sm btn-outline-info">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                                <a href="campaigns/stats.php?id=<?php echo $campaign['campaignID']; ?>" class="btn btn-sm btn-outline-success">
-                                                    <i class="fas fa-chart-bar"></i>
-                                                </a>
+                                                <?php if (isset($campaign['campaignID'])): ?>
+                                                    <a href="campaigns/edit.php?id=<?php echo $campaign['campaignID']; ?>" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <a href="campaigns/view.php?id=<?php echo $campaign['campaignID']; ?>" class="btn btn-sm btn-outline-info">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a href="campaigns/stats.php?id=<?php echo $campaign['campaignID']; ?>" class="btn btn-sm btn-outline-success">
+                                                        <i class="fas fa-chart-bar"></i>
+                                                    </a>
+                                                <?php endif; ?>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>

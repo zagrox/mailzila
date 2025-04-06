@@ -1,0 +1,40 @@
+RewriteEngine On
+RewriteBase /mailzila/
+
+# If the request is not for a file or directory
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Route auth pages
+RewriteRule ^auth/login/?$ pages/auth/login.php [L]
+RewriteRule ^auth/register/?$ pages/auth/register.php [L]
+RewriteRule ^auth/logout/?$ pages/auth/logout.php [L]
+RewriteRule ^auth/google/?$ pages/auth/google.php [L]
+RewriteRule ^auth/github/?$ pages/auth/github.php [L]
+
+# Route main pages
+RewriteRule ^$ pages/dashboard.php [L]
+RewriteRule ^campaigns/?$ pages/campaigns/list.php [L]
+RewriteRule ^campaigns/create/?$ pages/campaigns/create.php [L]
+RewriteRule ^campaigns/edit/([0-9]+)/?$ pages/campaigns/edit.php?id=$1 [L]
+RewriteRule ^campaigns/view/([0-9]+)/?$ pages/campaigns/view.php?id=$1 [L]
+RewriteRule ^campaigns/stats/([0-9]+)/?$ pages/campaigns/stats.php?id=$1 [L]
+RewriteRule ^campaigns/delete/([0-9]+)/?$ pages/campaigns/delete.php?id=$1 [L]
+
+# Route subscriber pages
+RewriteRule ^subscribers/?$ pages/subscribers/list.php [L]
+RewriteRule ^subscribers/create/?$ pages/subscribers/create.php [L]
+RewriteRule ^subscribers/edit/([0-9]+)/?$ pages/subscribers/edit.php?id=$1 [L]
+RewriteRule ^subscribers/delete/([0-9]+)/?$ pages/subscribers/delete.php?id=$1 [L]
+RewriteRule ^subscribers/import/?$ pages/subscribers/import.php [L]
+RewriteRule ^subscribers/activity/([0-9]+)/?$ pages/subscribers/activity.php?id=$1 [L]
+
+# Route template pages
+RewriteRule ^templates/?$ pages/templates/list.php [L]
+RewriteRule ^templates/create/?$ pages/templates/create.php [L]
+RewriteRule ^templates/edit/([0-9]+)/?$ pages/templates/edit.php?id=$1 [L]
+RewriteRule ^templates/delete/([0-9]+)/?$ pages/templates/delete.php?id=$1 [L]
+
+# Route profile pages
+RewriteRule ^profile/?$ pages/profile/index.php [L]
+RewriteRule ^settings/?$ pages/settings/index.php [L] 
