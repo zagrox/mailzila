@@ -35,6 +35,10 @@ RewriteRule ^templates/create/?$ pages/templates/create.php [L]
 RewriteRule ^templates/edit/([0-9]+)/?$ pages/templates/edit.php?id=$1 [L]
 RewriteRule ^templates/delete/([0-9]+)/?$ pages/templates/delete.php?id=$1 [L]
 
+# Route domain pages
+RewriteRule ^domains/?$ pages/domains/index.php [L]
+RewriteRule ^domains/verify/([^/]+)/?$ pages/domains/verify.php?domain=$1 [L]
+
 # Route profile pages
 RewriteRule ^profile/?$ pages/profile/index.php [L]
 RewriteRule ^settings/?$ pages/settings/index.php [L] 

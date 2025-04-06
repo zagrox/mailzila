@@ -29,12 +29,13 @@ class ElasticEmailAPI {
 
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
+        
         if ($httpCode >= 400) {
-            throw new Exception('API request failed with status code ' . $httpCode);
+            $error = json_decode($response, true);
+            throw new Exception(isset($error['message']) ? $error['message'] : 'API request failed with status code ' . $httpCode);
         }
 
+        curl_close($ch);
         return json_decode($response, true);
     }
 
@@ -157,5 +158,46 @@ class ElasticEmailAPI {
 
     public function deleteTemplate($templateId) {
         return $this->makeRequest('/templates/' . $templateId, 'DELETE');
+    }
+
+    // Domain Management Methods
+    public function getDomains() {
+        return $this->makeRequest('/domains');
+    }
+
+    public function getDomain($domainName) {
+        return $this->makeRequest('/domains/' . urlencode($domainName));
+    }
+
+    public function addDomain($domainName, $trackingType = 'http') {
+        $data = [
+            'domainName' => $domainName,
+            'trackingType' => $trackingType
+        ];
+        return $this->makeRequest('/domains', 'POST', $data);
+    }
+
+    public function deleteDomain($domainName) {
+        return $this->makeRequest('/domains/' . urlencode($domainName), 'DELETE');
+    }
+
+    public function verifyDomain($domainName) {
+        return $this->makeRequest('/domains/' . urlencode($domainName) . '/verify', 'POST');
+    }
+
+    public function getDomainVerificationStatus($domainName) {
+        return $this->makeRequest('/domains/' . urlencode($domainName) . '/verify');
+    }
+
+    public function getDomainSpfRecord($domainName) {
+        return $this->makeRequest('/domains/' . urlencode($domainName) . '/spf');
+    }
+
+    public function getDomainDkimRecord($domainName) {
+        return $this->makeRequest('/domains/' . urlencode($domainName) . '/dkim');
+    }
+
+    public function getDomainTrackingStatus($domainName) {
+        return $this->makeRequest('/domains/' . urlencode($domainName) . '/tracking');
     }
 } 

@@ -230,8 +230,13 @@ try {
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?php echo strpos($currentPath, '/templates') === 0 ? 'active' : ''; ?>" href="<?php echo APP_URL; ?>/templates">
+                            <a href="<?php echo APP_URL; ?>/templates" class="nav-link <?php echo $currentPath === '/templates' ? 'active' : ''; ?>">
                                 <i class="fas fa-file-alt"></i> Templates
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo APP_URL; ?>/domains" class="nav-link <?php echo $currentPath === '/domains' ? 'active' : ''; ?>">
+                                <i class="fas fa-globe"></i> Domains
                             </a>
                         </li>
                     </ul>
