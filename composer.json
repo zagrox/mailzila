@@ -1,16 +1,25 @@
 {
-    "name": "mailzila/newsletter-platform",
-    "description": "Newsletter platform using ElasticEmail SDK",
+    "name": "zagrox/mailzila",
+    "description": "A modern newsletter platform",
     "type": "project",
     "require": {
-        "php": ">=7.4",
+        "php": "^8.0",
+        "ext-json": "*",
+        "ext-pdo": "*",
+        "ext-curl": "*",
         "elasticemail/elasticemail-php": "^4.0",
         "vlucas/phpdotenv": "^5.5",
         "monolog/monolog": "^2.0"
     },
     "autoload": {
         "psr-4": {
-            "Mailzila\\": "src/"
+            "App\\": "src/"
         }
-    }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "minimum-stability": "stable"
 } 
