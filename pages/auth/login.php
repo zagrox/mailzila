@@ -1,5 +1,11 @@
 <?php
-require_once __DIR__ . '/../../includes/header.php';
+require_once __DIR__ . '/../../config/init.php';
+
+// If already logged in, redirect to dashboard
+if (isLoggedIn()) {
+    header('Location: ' . APP_URL);
+    exit;
+}
 
 $auth = new Auth();
 $error = null;
@@ -19,6 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+
+require_once __DIR__ . '/../../includes/header.php';
 ?>
 
 <div class="container">

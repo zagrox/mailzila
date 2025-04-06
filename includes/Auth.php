@@ -4,12 +4,8 @@ class Auth {
     private $db;
 
     public function __construct() {
-        $this->db = Database::getInstance(
-            $_ENV['DB_HOST'],
-            $_ENV['DB_NAME'],
-            $_ENV['DB_USER'],
-            $_ENV['DB_PASS']
-        );
+        global $db;
+        $this->db = $db;
     }
 
     public function login($email, $password) {
@@ -20,7 +16,7 @@ class Auth {
             if (!empty($result)) {
                 $user = $result[0];
                 if (password_verify($password, $user['password'])) {
-                    $_SESSION['user_id'] = $user['id'];
+                    $this->setSession($user);
                     return true;
                 }
             }
@@ -107,11 +103,16 @@ class Auth {
     }
 
     public function logout() {
-        session_destroy();
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_destroy();
+        }
         return true;
     }
 
     public function isLoggedIn() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         return isset($_SESSION['user_id']);
     }
 
@@ -179,6 +180,9 @@ class Auth {
     }
 
     private function setSession($user) {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['user_email'] = $user['email'];
         $_SESSION['user_name'] = $user['first_name'] . ' ' . $user['last_name'];

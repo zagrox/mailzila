@@ -1,6 +1,7 @@
 {
     "name": "zagrox/mailzila",
     "description": "A modern newsletter platform",
+    "version": "1.1.0",
     "type": "project",
     "require": {
         "php": "^8.2",

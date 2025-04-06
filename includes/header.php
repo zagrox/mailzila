@@ -1,46 +1,13 @@
 <?php
-session_start();
-
-// Load environment variables
-$envFile = __DIR__ . '/../.env';
-if (file_exists($envFile)) {
-    $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach ($lines as $line) {
-        if (strpos($line, '=') !== false && strpos($line, '#') !== 0) {
-            list($key, $value) = explode('=', $line, 2);
-            $_ENV[trim($key)] = trim($value);
-        }
-    }
-} else {
-    die('Environment file not found. Please create a .env file.');
-}
-
-// Define application constants
-define('APP_URL', $_ENV['APP_URL'] ?? 'http://localhost:8888/mailzila');
-define('APP_NAME', $_ENV['APP_NAME'] ?? 'Mailzila');
-define('APP_ENV', $_ENV['APP_ENV'] ?? 'production');
-define('APP_DEBUG', $_ENV['APP_DEBUG'] ?? false);
-
-// Initialize database connection
-require_once __DIR__ . '/Database.php';
-$db = Database::getInstance(
-    $_ENV['DB_HOST'],
-    $_ENV['DB_NAME'],
-    $_ENV['DB_USER'],
-    $_ENV['DB_PASS']
-);
-
-// Initialize authentication
-require_once __DIR__ . '/Auth.php';
-$auth = new Auth();
-
-// Check if user is logged in
-$isLoggedIn = $auth->isLoggedIn();
-$currentUser = $isLoggedIn ? $auth->getCurrentUser() : null;
+require_once __DIR__ . '/bootstrap.php';
 
 // Get current path without base URL
 $currentPath = str_replace('/mailzila', '', $_SERVER['REQUEST_URI']);
 $currentPath = strtok($currentPath, '?'); // Remove query string
+
+// Initialize login state and user data
+$isLoggedIn = isLoggedIn();
+$currentUser = $isLoggedIn ? getCurrentUser() : null;
 
 // If not logged in and not on an auth page, redirect to login
 $authPaths = ['/auth/login', '/auth/register', '/auth/google', '/auth/github'];
@@ -53,27 +20,6 @@ if (!$isLoggedIn && !in_array($currentPath, $authPaths)) {
 if ($isLoggedIn && in_array($currentPath, $authPaths)) {
     header('Location: ' . APP_URL);
     exit;
-}
-
-// Load ElasticEmail API
-require_once __DIR__ . '/ElasticEmailAPI.php';
-$api = null;
-
-try {
-    if (isset($_ENV['ELASTICEMAIL_API_KEY'])) {
-        $api = new ElasticEmailAPI($_ENV['ELASTICEMAIL_API_KEY']);
-    } else {
-        throw new Exception('ElasticEmail API key not found in environment variables.');
-    }
-} catch (Exception $e) {
-    if (APP_DEBUG) {
-        echo '<div class="alert alert-danger">';
-        echo '<h5>Debug Information:</h5>';
-        echo '<p>Error: ' . htmlspecialchars($e->getMessage()) . '</p>';
-        echo '<p>File: ' . htmlspecialchars($e->getFile()) . '</p>';
-        echo '<p>Line: ' . htmlspecialchars($e->getLine()) . '</p>';
-        echo '</div>';
-    }
 }
 ?>
 <!DOCTYPE html>
