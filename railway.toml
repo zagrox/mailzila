@@ -14,4 +14,13 @@ APP_ENV = "production"
 APP_DEBUG = "false"
 
 [phases.setup]
-nixPkgs = ["php82", "php82Extensions.pdo", "php82Extensions.curl", "php82Extensions.json"] 
+nixPkgs = [
+    "php82",
+    "php82Extensions.pdo",
+    "php82Extensions.curl",
+    "php82Extensions.json",
+    "php82Extensions.mysql"
+]
+
+[nixpacks]
+php-version = "8.2" 

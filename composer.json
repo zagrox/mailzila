@@ -7,6 +7,7 @@
         "ext-json": "*",
         "ext-pdo": "*",
         "ext-curl": "*",
+        "ext-mysql": "*",
         "elasticemail/elasticemail-php": "^4.0",
         "vlucas/phpdotenv": "^5.5",
         "monolog/monolog": "^2.0"
@@ -24,5 +25,6 @@
             "php": "8.2"
         }
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "prefer-stable": true
 } 
