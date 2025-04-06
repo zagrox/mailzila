@@ -3,11 +3,6 @@ require_once __DIR__ . '/../includes/header.php';
 
 // Get campaign statistics
 try {
-    // Debug: Print API key (first few characters only)
-    if (APP_DEBUG) {
-        echo "<!-- API Key: " . substr($_ENV['ELASTICEMAIL_API_KEY'], 0, 4) . "..." . " -->";
-    }
-
     $campaigns = $api->getCampaigns();
     
     // Debug: Print raw API response
