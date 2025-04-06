@@ -11,4 +11,7 @@ restartPolicyMaxRetries = 3
 
 [deploy.env]
 APP_ENV = "production"
-APP_DEBUG = "false" 
+APP_DEBUG = "false"
+
+[phases.setup]
+nixPkgs = ["php82", "php82Extensions.pdo", "php82Extensions.curl", "php82Extensions.json"] 
