@@ -6,7 +6,7 @@ buildCommand = """
 """
 
 [deploy]
-startCommand = "php -S 0.0.0.0:$PORT"
+startCommand = "php -S 0.0.0.0:${PORT:-8080}"
 healthcheckPath = "/"
 healthcheckTimeout = 100
 restartPolicyType = "on-failure"
@@ -22,8 +22,10 @@ nixPkgs = [
     "php82Extensions.pdo",
     "php82Extensions.curl",
     "php82Extensions.json",
-    "php82Extensions.mysql"
+    "php82Extensions.mysql",
+    "composer"
 ]
 
 [nixpacks]
-php-version = "8.2" 
+php-version = "8.2"
+enable_runtime = true 
