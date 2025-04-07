@@ -116,38 +116,127 @@ if ($isLoggedIn && in_array($currentPath, $authPaths)) {
             });
         });
     </script>
+    <style>
+        .main-header {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 250px; /* Same as sidebar width */
+            height: 60px;
+            background: var(--bg-color);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 1000;
+            transition: left 0.3s ease;
+        }
+
+        body.nav-collapsed .main-header {
+            left: 60px; /* Same as collapsed sidebar width */
+        }
+
+        .main-header .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px; /* Space between icons */
+        }
+
+        .notification-btn {
+            position: relative;
+            color: var(--text-color);
+            font-size: 1.2rem;
+            padding: 8px;
+            border-radius: 50%;
+            background: transparent;
+            transition: background-color 0.3s ease;
+        }
+
+        .notification-btn:hover {
+            background-color: var(--hover-color);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--danger-color);
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.75rem;
+            min-width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #sidebarToggle, #mobileSidebarToggle {
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.2rem;
+            padding: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #sidebarToggle:hover, #mobileSidebarToggle:hover {
+            background-color: var(--hover-color);
+        }
+
+        /* Adjust main content padding to account for fixed header */
+        .main-content {
+            padding-top: 80px !important;
+        }
+
+        /* Mobile styles */
+        @media (max-width: 767.98px) {
+            .main-header {
+                left: 0;
+            }
+
+            #sidebarToggle {
+                display: none;
+            }
+        }
+
+        @media (min-width: 768px) {
+            #mobileSidebarToggle {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
-    <?php if ($isLoggedIn): ?>
-        <div class="header-actions">
-            <!-- Notification button -->
-            <a href="<?php echo APP_URL; ?>/pages/notifications" class="notification-btn">
-                <i class="fas fa-bell"></i>
-                <?php
-                try {
+    <?php if (isset($_SESSION['user_id'])): ?>
+        <!-- Main Header -->
+        <div class="main-header">
+            <div class="header-actions">
+                <button id="mobileSidebarToggle" class="d-md-none">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <button id="sidebarToggle" class="d-none d-md-block">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a href="<?php echo APP_URL; ?>/pages/notifications" class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <?php
                     // Get unread notification count
                     $sql = "SELECT COUNT(*) as count FROM notifications WHERE user_id = ? AND is_read = 0";
                     $result = $db->select($sql, [$_SESSION['user_id']]);
                     $unreadCount = $result[0]['count'] ?? 0;
                     if ($unreadCount > 0):
-                ?>
-                    <span class="notification-badge"><?php echo $unreadCount; ?></span>
-                <?php 
-                    endif;
-                } catch (Exception $e) {
-                    // Silently fail for notifications - they're not critical
-                    error_log("Notification error: " . $e->getMessage());
-                }
-                ?>
-            </a>
-            <!-- Toggle buttons -->
-            <button id="mobileSidebarToggle" class="mobile-sidebar-toggle">
-                <i class="fas fa-bars"></i>
-            </button>
-            <button id="sidebarToggle" class="sidebar-toggle">
-                <i class="fas fa-bars"></i>
-            </button>
+                    ?>
+                        <span class="notification-badge"><?php echo $unreadCount; ?></span>
+                    <?php endif; ?>
+                </a>
+            </div>
         </div>
+
+        <!-- Sidebar Backdrop -->
         <div class="sidebar-backdrop"></div>
         
         <div class="container-fluid">
