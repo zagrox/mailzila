@@ -46,13 +46,14 @@
     font-style: normal;
 }
 
+/* Body styles */
 body.rtl {
     direction: rtl;
     text-align: right;
     font-family: 'Vazir', sans-serif;
 }
 
-/* Sidebar RTL */
+/* Main sidebar */
 body.rtl .main-sidebar {
     right: 0;
     left: auto;
@@ -63,14 +64,206 @@ body.rtl .main-footer,
 body.rtl .main-header {
     margin-right: 250px;
     margin-left: 0;
+    padding-right: 0; /* Fix A: Remove padding on the right side */
+    padding-left: 0; /* Fix A: Remove padding on the left side */
 }
 
+/* Fix A: Adjust container width to prevent overflow */
+body.rtl .container-fluid {
+    width: 100%;
+    padding-right: 1rem;
+    padding-left: 1rem;
+}
+
+/* Fix B: Sidebar menu alignment */
+body.rtl .nav-sidebar {
+    padding-right: 0;
+}
+
+body.rtl .nav-sidebar .nav-item {
+    width: 100%;
+    text-align: right;
+}
+
+body.rtl .nav-sidebar .nav-link {
+    padding: 0.75rem 1rem;
+}
+
+/* Align sidebar menu icons */
+body.rtl .nav-sidebar .nav-item .nav-icon {
+    margin-left: 0.2rem;
+    margin-right: 0;
+}
+
+/* Fix B: Correct submenu indentation */
+body.rtl .nav-sidebar .nav-treeview {
+    padding-right: 1rem;
+    padding-left: 0;
+}
+
+/* Navbar */
+body.rtl .navbar-nav {
+    padding-right: 0;
+}
+
+body.rtl .navbar-nav > li {
+    float: right;
+}
+
+/* Cards */
+body.rtl .card-header > .card-tools {
+    right: auto;
+    left: 1rem;
+}
+
+body.rtl .card-title {
+    float: right;
+}
+
+/* Content header */
+body.rtl .content-header .breadcrumb {
+    float: left;
+}
+
+/* Tables */
+body.rtl .table th, 
+body.rtl .table td {
+    text-align: right;
+}
+
+/* Form controls */
+body.rtl .form-check-input {
+    margin-right: -1.25rem;
+    margin-left: 0;
+}
+
+body.rtl .form-check-label {
+    padding-right: 1.25rem;
+    padding-left: 0;
+}
+
+body.rtl .input-group > .input-group-append > .btn, 
+body.rtl .input-group > .input-group-append > .input-group-text, 
+body.rtl .input-group > .input-group-prepend:not(:first-child) > .btn, 
+body.rtl .input-group > .input-group-prepend:not(:first-child) > .input-group-text, 
+body.rtl .input-group > .input-group-prepend:first-child > .btn:not(:first-child), 
+body.rtl .input-group > .input-group-prepend:first-child > .input-group-text:not(:first-child) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
+}
+
+body.rtl .input-group > .form-control:not(:last-child), 
+body.rtl .input-group > .custom-select:not(:last-child) {
+    border-top-right-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+/* Dropdown menus */
+body.rtl .dropdown-menu {
+    text-align: right;
+}
+
+body.rtl .dropdown-item {
+    text-align: right;
+}
+
+/* Modal */
+body.rtl .modal-header .close {
+    margin: -1rem auto -1rem -1rem;
+}
+
+body.rtl .modal-footer {
+    justify-content: flex-start;
+}
+
+/* Float utilities */
+body.rtl .float-right {
+    float: left !important;
+}
+
+body.rtl .float-left {
+    float: right !important;
+}
+
+/* Text utilities */
+body.rtl .text-right {
+    text-align: left !important;
+}
+
+body.rtl .text-left {
+    text-align: right !important;
+}
+
+/* Sidebar nav */
+body.rtl .nav-sidebar .nav-link > p > .right {
+    right: auto;
+    left: 1rem;
+}
+
+body.rtl .nav-sidebar .nav-link > .right, 
+body.rtl .nav-sidebar .nav-link > p > .right {
+    position: absolute;
+    right: auto;
+    left: 1rem;
+}
+
+body.rtl .nav-sidebar .menu-open > .nav-treeview {
+    padding-right: 1rem;
+    padding-left: 0;
+}
+
+/* Custom scrollbar for RTL */
+body.rtl::-webkit-scrollbar {
+    left: 0;
+    right: auto;
+}
+
+/* Fix B: Correct alignment when sidebar is collapsed */
+body.rtl .sidebar-mini.sidebar-collapse .main-sidebar .nav-sidebar .nav-link {
+    width: calc(250px - 0.5rem * 2);
+    padding-right: 1rem;
+}
+
+body.rtl .sidebar-mini.sidebar-collapse .main-sidebar:not(:hover) .nav-sidebar .nav-link {
+    width: 4.6rem;
+}
+
+body.rtl .sidebar-mini.sidebar-collapse .main-sidebar:not(:hover) .brand-text, 
+body.rtl .sidebar-mini.sidebar-collapse .main-sidebar:not(:hover) .nav-sidebar .nav-link p {
+    margin-right: -10px;
+}
+
+/* Fix B: Fix user panel alignment in sidebar */
+body.rtl .user-panel {
+    direction: rtl;
+}
+
+body.rtl .user-panel .image {
+    padding-right: 0;
+    padding-left: .8rem;
+}
+
+/* Media queries for sidebar collapse */
 @media (min-width: 992px) {
     body.rtl .sidebar-mini.sidebar-collapse .content-wrapper, 
     body.rtl .sidebar-mini.sidebar-collapse .main-footer, 
     body.rtl .sidebar-mini.sidebar-collapse .main-header {
         margin-right: 4.6rem !important;
         margin-left: 0 !important;
+    }
+
+    body.rtl .sidebar-mini.sidebar-collapse .main-sidebar:hover {
+        margin-right: 0;
+    }
+    
+    /* Fix B: Add specific alignment for collapsed sidebar icons */
+    body.rtl .sidebar-mini.sidebar-collapse .nav-sidebar .nav-link .nav-icon {
+        margin-right: 0;
+        margin-left: 0;
     }
 }
 
@@ -83,196 +276,29 @@ body.rtl .main-header {
     
     body.rtl .main-sidebar, 
     body.rtl .main-sidebar::before {
-        right: -250px;
-        left: auto;
+        margin-right: -250px;
+        margin-left: 0;
     }
     
     body.rtl .sidebar-open .main-sidebar, 
     body.rtl .sidebar-open .main-sidebar::before {
-        right: 0;
-        left: auto;
+        margin-right: 0;
+    }
+    
+    /* Fix A: Remove padding on mobile view */
+    body.rtl .content-wrapper {
+        padding: 0 !important;
     }
 }
 
-/* Navbar RTL */
-body.rtl .navbar-nav {
-    padding-right: 0;
+/* Fix A: Dashboard card spacing */
+body.rtl .row {
+    margin-right: -7.5px;
+    margin-left: -7.5px;
 }
 
-body.rtl .navbar-nav .dropdown-menu {
-    right: 0;
-    left: auto;
-    text-align: right;
-}
-
-body.rtl .navbar .navbar-nav .messages-menu .dropdown-menu > li .menu > li > a > div > p,
-body.rtl .navbar .navbar-nav .messages-menu .dropdown-menu > li .menu > li > a > h4,
-body.rtl .navbar .navbar-nav .notifications-menu .dropdown-menu > li .menu > li > a,
-body.rtl .navbar .navbar-nav .tasks-menu .dropdown-menu > li .menu > li > a {
-    margin-right: 45px;
-    margin-left: 0;
-}
-
-body.rtl .nav-sidebar .nav-link > .right, 
-body.rtl .nav-sidebar .nav-link > p > .right {
-    left: 1rem;
-    right: auto;
-}
-
-body.rtl .nav-sidebar .nav-link > .right:nth-child(2), 
-body.rtl .nav-sidebar .nav-link > p > .right:nth-child(2) {
-    left: 2.2rem;
-    right: auto;
-}
-
-body.rtl .small-box .icon > i {
-    left: 15px;
-    right: auto;
-}
-
-/* Card RTL */
-body.rtl .card-title {
-    float: right;
-}
-
-body.rtl .card-tools {
-    float: left;
-}
-
-/* Form Control RTL */
-body.rtl .form-check-input {
-    margin-right: -1.25rem;
-    margin-left: 0;
-}
-
-body.rtl .form-check {
-    padding-right: 1.25rem;
-    padding-left: 0;
-}
-
-body.rtl .input-group .input-group-append .btn {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-top-left-radius: 0.25rem;
-    border-bottom-left-radius: 0.25rem;
-}
-
-body.rtl .input-group .form-control {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    border-top-right-radius: 0.25rem;
-    border-bottom-right-radius: 0.25rem;
-}
-
-body.rtl .input-group > .input-group-prepend > .btn,
-body.rtl .input-group > .input-group-prepend > .input-group-text {
-    border-top-right-radius: 0.25rem;
-    border-bottom-right-radius: 0.25rem;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-}
-
-/* Misc RTL */
-body.rtl .mr-auto {
-    margin-right: 0 !important;
-    margin-left: auto !important;
-}
-
-body.rtl .ml-auto {
-    margin-left: 0 !important;
-    margin-right: auto !important;
-}
-
-body.rtl .text-right {
-    text-align: left !important;
-}
-
-body.rtl .text-left {
-    text-align: right !important;
-}
-
-body.rtl .float-right {
-    float: left !important;
-}
-
-body.rtl .float-left {
-    float: right !important;
-}
-
-body.rtl .dropdown-menu-right {
-    left: 0 !important;
-    right: auto !important;
-}
-
-/* Modal RTL */
-body.rtl .modal-header .close {
-    margin: -1rem auto -1rem -1rem;
-}
-
-body.rtl .modal-footer {
-    justify-content: flex-start;
-}
-
-body.rtl .mr-1,
-body.rtl .mr-2,
-body.rtl .mr-3,
-body.rtl .mr-4,
-body.rtl .mr-5 {
-    margin-right: 0 !important;
-}
-
-body.rtl .mr-1 {
-    margin-left: 0.25rem !important;
-}
-
-body.rtl .mr-2 {
-    margin-left: 0.5rem !important;
-}
-
-body.rtl .mr-3 {
-    margin-left: 1rem !important;
-}
-
-body.rtl .mr-4 {
-    margin-left: 1.5rem !important;
-}
-
-body.rtl .mr-5 {
-    margin-left: 3rem !important;
-}
-
-body.rtl .ml-1,
-body.rtl .ml-2,
-body.rtl .ml-3,
-body.rtl .ml-4,
-body.rtl .ml-5 {
-    margin-left: 0 !important;
-}
-
-body.rtl .ml-1 {
-    margin-right: 0.25rem !important;
-}
-
-body.rtl .ml-2 {
-    margin-right: 0.5rem !important;
-}
-
-body.rtl .ml-3 {
-    margin-right: 1rem !important;
-}
-
-body.rtl .ml-4 {
-    margin-right: 1.5rem !important;
-}
-
-body.rtl .ml-5 {
-    margin-right: 3rem !important;
-}
-
-body.rtl .list-group {
-    padding-right: 0;
-}
-
-body.rtl .close {
-    float: left;
+body.rtl .col, 
+body.rtl [class*="col-"] {
+    padding-right: 7.5px;
+    padding-left: 7.5px;
 } 
