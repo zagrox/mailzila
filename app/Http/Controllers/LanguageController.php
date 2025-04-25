@@ -17,10 +17,10 @@ class LanguageController extends Controller
     public function changeLanguage(Request $request)
     {
         $validated = $request->validate([
-            'lang' => 'required|string|size:2',
+            'language' => 'required|string|size:2',
         ]);
 
-        $lang = $validated['lang'];
+        $lang = $validated['language'];
         
         // Set locale
         App::setLocale($lang);

@@ -72,6 +72,13 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/profile', [ProfileController::class, 'index'])->name('admin.profile');
     Route::get('/password', [PasswordController::class, 'index'])->name('admin.password');
+    
+    // Language management routes
+    Route::get('/language', [App\Http\Controllers\Admin\LanguageController::class, 'index'])->name('admin.language.index');
+    Route::get('/language/edit', [App\Http\Controllers\Admin\LanguageController::class, 'edit'])->name('admin.language.edit');
+    Route::post('/language/update', [App\Http\Controllers\Admin\LanguageController::class, 'update'])->name('admin.language.update');
+    Route::post('/language/auto-translate', [App\Http\Controllers\Admin\LanguageController::class, 'autoTranslate'])->name('admin.language.auto-translate');
+    Route::get('/language/use', [App\Http\Controllers\Admin\LanguageController::class, 'changeLanguage'])->name('admin.language.use');
 });
 
 // Redirect default home route to admin dashboard
