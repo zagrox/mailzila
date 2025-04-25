@@ -19,6 +19,11 @@ $(function () {
             // Update sidebar
             $('.main-sidebar').addClass('sidebar-dark-primary').removeClass('sidebar-light-primary');
             
+            // Update sidebar menu labels
+            $('.nav-sidebar .nav-link p').addClass('text-light');
+            $('.nav-header').addClass('text-light');
+            $('.brand-text').addClass('text-light');
+            
             // Update cards and other elements
             $('.card').addClass('card-dark');
             $('.card-header').addClass('bg-dark');
@@ -34,6 +39,11 @@ $(function () {
             
             // Update sidebar
             $('.main-sidebar').removeClass('sidebar-dark-primary').addClass('sidebar-light-primary');
+            
+            // Update sidebar menu labels
+            $('.nav-sidebar .nav-link p').removeClass('text-light');
+            $('.nav-header').removeClass('text-light');
+            $('.brand-text').removeClass('text-light');
             
             // Update cards and other elements
             $('.card').removeClass('card-dark');
