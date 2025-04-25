@@ -57,6 +57,7 @@ body.rtl {
 body.rtl .main-sidebar {
     right: 0;
     left: auto;
+    width: 250px;
 }
 
 body.rtl .content-wrapper, 
@@ -283,6 +284,7 @@ body.rtl .user-panel .image {
     body.rtl .sidebar-open .main-sidebar, 
     body.rtl .sidebar-open .main-sidebar::before {
         margin-right: 0;
+        width: 250px !important;
     }
     
     /* Fix A: Remove padding on mobile view */
@@ -314,4 +316,30 @@ body.rtl.sidebar-mini.sidebar-collapse .main-header,
 body.rtl.sidebar-mini.sidebar-collapse .main-footer,
 body.rtl.sidebar-mini.sidebar-collapse .content-wrapper {
     margin-left: initial !important;
+}
+
+/* Fix sidebar width when toggled */
+body.rtl .main-sidebar {
+    width: 250px !important;
+}
+
+body.rtl.sidebar-mini.sidebar-collapse .main-sidebar {
+    width: 4.6rem !important;
+}
+
+body.rtl.sidebar-mini.sidebar-collapse .main-sidebar:hover {
+    width: 250px !important;
+}
+
+/* Fix mobile sidebar toggle */
+body.rtl.sidebar-open .main-sidebar {
+    width: 250px !important;
+    right: 0 !important;
+    transform: translateX(0);
+}
+
+/* Fix sidebar overlay */
+body.rtl #sidebar-overlay {
+    right: 250px;
+    left: 0;
 } 
