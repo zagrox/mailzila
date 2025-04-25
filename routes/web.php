@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\ConfirmPasswordController;
 use App\Http\Controllers\Auth\VerificationController;
+use App\Http\Controllers\LanguageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,6 +62,9 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('email/resend', [VerificationController::class, 'resend'])
         ->middleware(['auth', 'throttle:6,1'])
         ->name('verification.resend');
+        
+    // Language change route
+    Route::post('change-language', [LanguageController::class, 'changeLanguage'])->name('change.language');
 });
 
 // Admin routes with auth middleware

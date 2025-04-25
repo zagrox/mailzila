@@ -1,0 +1,245 @@
+/*
+ * RTL Support for AdminLTE
+ */
+
+@font-face {
+    font-family: 'Vazir';
+    src: url('../fonts/Vazir.eot');
+    src: url('../fonts/Vazir.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Vazir.woff2') format('woff2'),
+         url('../fonts/Vazir.woff') format('woff'),
+         url('../fonts/Vazir.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body.rtl {
+    direction: rtl;
+    text-align: right;
+    font-family: 'Vazir', sans-serif;
+}
+
+/* Sidebar RTL */
+body.rtl .main-sidebar {
+    right: 0;
+    left: auto;
+}
+
+body.rtl .content-wrapper, 
+body.rtl .main-footer, 
+body.rtl .main-header {
+    margin-right: 250px;
+    margin-left: 0;
+}
+
+@media (min-width: 992px) {
+    body.rtl .sidebar-mini.sidebar-collapse .content-wrapper, 
+    body.rtl .sidebar-mini.sidebar-collapse .main-footer, 
+    body.rtl .sidebar-mini.sidebar-collapse .main-header {
+        margin-right: 4.6rem !important;
+        margin-left: 0 !important;
+    }
+}
+
+@media (max-width: 991.98px) {
+    body.rtl .content-wrapper, 
+    body.rtl .main-footer, 
+    body.rtl .main-header {
+        margin-right: 0;
+    }
+    
+    body.rtl .main-sidebar, 
+    body.rtl .main-sidebar::before {
+        right: -250px;
+        left: auto;
+    }
+    
+    body.rtl .sidebar-open .main-sidebar, 
+    body.rtl .sidebar-open .main-sidebar::before {
+        right: 0;
+        left: auto;
+    }
+}
+
+/* Navbar RTL */
+body.rtl .navbar-nav {
+    padding-right: 0;
+}
+
+body.rtl .navbar-nav .dropdown-menu {
+    right: 0;
+    left: auto;
+    text-align: right;
+}
+
+body.rtl .navbar .navbar-nav .messages-menu .dropdown-menu > li .menu > li > a > div > p,
+body.rtl .navbar .navbar-nav .messages-menu .dropdown-menu > li .menu > li > a > h4,
+body.rtl .navbar .navbar-nav .notifications-menu .dropdown-menu > li .menu > li > a,
+body.rtl .navbar .navbar-nav .tasks-menu .dropdown-menu > li .menu > li > a {
+    margin-right: 45px;
+    margin-left: 0;
+}
+
+body.rtl .nav-sidebar .nav-link > .right, 
+body.rtl .nav-sidebar .nav-link > p > .right {
+    left: 1rem;
+    right: auto;
+}
+
+body.rtl .nav-sidebar .nav-link > .right:nth-child(2), 
+body.rtl .nav-sidebar .nav-link > p > .right:nth-child(2) {
+    left: 2.2rem;
+    right: auto;
+}
+
+body.rtl .small-box .icon > i {
+    left: 15px;
+    right: auto;
+}
+
+/* Card RTL */
+body.rtl .card-title {
+    float: right;
+}
+
+body.rtl .card-tools {
+    float: left;
+}
+
+/* Form Control RTL */
+body.rtl .form-check-input {
+    margin-right: -1.25rem;
+    margin-left: 0;
+}
+
+body.rtl .form-check {
+    padding-right: 1.25rem;
+    padding-left: 0;
+}
+
+body.rtl .input-group .input-group-append .btn {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
+}
+
+body.rtl .input-group .form-control {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+}
+
+body.rtl .input-group > .input-group-prepend > .btn,
+body.rtl .input-group > .input-group-prepend > .input-group-text {
+    border-top-right-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+/* Misc RTL */
+body.rtl .mr-auto {
+    margin-right: 0 !important;
+    margin-left: auto !important;
+}
+
+body.rtl .ml-auto {
+    margin-left: 0 !important;
+    margin-right: auto !important;
+}
+
+body.rtl .text-right {
+    text-align: left !important;
+}
+
+body.rtl .text-left {
+    text-align: right !important;
+}
+
+body.rtl .float-right {
+    float: left !important;
+}
+
+body.rtl .float-left {
+    float: right !important;
+}
+
+body.rtl .dropdown-menu-right {
+    left: 0 !important;
+    right: auto !important;
+}
+
+/* Modal RTL */
+body.rtl .modal-header .close {
+    margin: -1rem auto -1rem -1rem;
+}
+
+body.rtl .modal-footer {
+    justify-content: flex-start;
+}
+
+body.rtl .mr-1,
+body.rtl .mr-2,
+body.rtl .mr-3,
+body.rtl .mr-4,
+body.rtl .mr-5 {
+    margin-right: 0 !important;
+}
+
+body.rtl .mr-1 {
+    margin-left: 0.25rem !important;
+}
+
+body.rtl .mr-2 {
+    margin-left: 0.5rem !important;
+}
+
+body.rtl .mr-3 {
+    margin-left: 1rem !important;
+}
+
+body.rtl .mr-4 {
+    margin-left: 1.5rem !important;
+}
+
+body.rtl .mr-5 {
+    margin-left: 3rem !important;
+}
+
+body.rtl .ml-1,
+body.rtl .ml-2,
+body.rtl .ml-3,
+body.rtl .ml-4,
+body.rtl .ml-5 {
+    margin-left: 0 !important;
+}
+
+body.rtl .ml-1 {
+    margin-right: 0.25rem !important;
+}
+
+body.rtl .ml-2 {
+    margin-right: 0.5rem !important;
+}
+
+body.rtl .ml-3 {
+    margin-right: 1rem !important;
+}
+
+body.rtl .ml-4 {
+    margin-right: 1.5rem !important;
+}
+
+body.rtl .ml-5 {
+    margin-right: 3rem !important;
+}
+
+body.rtl .list-group {
+    padding-right: 0;
+}
+
+body.rtl .close {
+    float: left;
+} 

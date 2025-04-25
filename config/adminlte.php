@@ -306,6 +306,10 @@ return [
             'topnav_right' => true,
         ],
         [
+            'type' => 'language-dropdown-menu',
+            'topnav_right' => true,
+        ],
+        [
             'type' => 'darkmode-widget',
             'topnav_right' => true,
         ],
