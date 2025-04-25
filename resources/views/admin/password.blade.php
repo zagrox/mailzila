@@ -42,5 +42,6 @@
 @stop
 
 @section('js')
+    <script src="{{ asset('js/adminlte-dark-mode.js') }}"></script>
     <script> console.log('MailZila Admin Panel'); </script>
 @stop 

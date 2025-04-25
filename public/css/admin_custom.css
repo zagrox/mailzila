@@ -29,4 +29,51 @@
 
 .card-primary.card-outline {
     border-top: 3px solid #4b6cb7;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #1a1d21;
+    color: #fff;
+}
+
+.dark-mode .card {
+    background-color: #343a40;
+    color: #fff;
+}
+
+.dark-mode .card-header {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .card-body {
+    background-color: #343a40;
+}
+
+.dark-mode .table {
+    color: #fff;
+}
+
+.dark-mode .small-box {
+    color: #fff;
+}
+
+.dark-mode .form-control {
+    background-color: #454d55;
+    color: #fff;
+    border-color: #6c757d;
+}
+
+.dark-mode .form-control:focus {
+    background-color: #4b545c;
+    color: #fff;
+}
+
+.dark-mode .nav-pills .nav-link:not(.active):hover {
+    color: #fff;
+}
+
+/* Dark mode transition effects */
+body, .main-header, .main-sidebar, .content-wrapper, .card, .form-control {
+    transition: background-color 0.3s ease, color 0.3s ease;
 } 
