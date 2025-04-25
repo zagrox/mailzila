@@ -253,7 +253,7 @@ body.rtl .user-panel .image {
     body.rtl .sidebar-mini.sidebar-collapse .main-footer, 
     body.rtl .sidebar-mini.sidebar-collapse .main-header {
         margin-right: 4.6rem !important;
-        margin-left: 0 !important;
+        margin-left: 0;
     }
 
     body.rtl .sidebar-mini.sidebar-collapse .main-sidebar:hover {
@@ -301,4 +301,17 @@ body.rtl .col,
 body.rtl [class*="col-"] {
     padding-right: 7.5px;
     padding-left: 7.5px;
+}
+
+/* Fix the margin-left values shown in debug */
+body.rtl .main-header,
+body.rtl .main-footer,
+body.rtl .content-wrapper {
+    margin-left: initial !important;
+}
+
+body.rtl.sidebar-mini.sidebar-collapse .main-header,
+body.rtl.sidebar-mini.sidebar-collapse .main-footer,
+body.rtl.sidebar-mini.sidebar-collapse .content-wrapper {
+    margin-left: initial !important;
 } 
